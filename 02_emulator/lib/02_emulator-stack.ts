@@ -1,13 +1,15 @@
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as cdk from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { Repository } from "aws-cdk-lib/aws-ecr";
-import * as ecs from "aws-cdk-lib/aws-ecs";
-import * as autoscaling from 'aws-cdk-lib/aws-autoscaling';
 import { Construct } from 'constructs';
 
+interface EmulatorStackProps extends cdk.StackProps {
+  instanceAmiId: string
+  region: string
+}
+
 export class EmulatorStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: EmulatorStackProps) {
     super(scope, id, props);
 
     // --------------------
@@ -58,26 +60,25 @@ export class EmulatorStack extends cdk.Stack {
     // --------------------
     // EC2
     // --------------------
-    const instanceType = new ec2.InstanceType('t3.xlarge');
-    const autoScalingGroup = new ecs.AsgCapacityProvider(this, 'IbcAsgCapacityProvider', {
-      autoScalingGroup: new autoscaling.AutoScalingGroup(this, 'IbcEcsAsg', {
-        vpc,
+    const instanceType = new ec2.InstanceType('i3.metal');
+    const instance = new ec2.Instance(this, 'Instance', {
+      vpc,
         vpcSubnets: vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }),
         instanceType,
-        machineImage: ecs.EcsOptimizedImage.amazonLinux2(
-          ecs.AmiHardwareType.STANDARD,
-        ),
-        minCapacity: 1,
-        maxCapacity: 1,
+        machineImage: ec2.MachineImage.genericLinux({
+          [props?.region as string]: props?.instanceAmiId as string,
+        }),
+        requireImdsv2: true,
         role: ec2Role,
         securityGroup: securityGroupEc2,
         blockDevices: [
           {
             deviceName: "/dev/xvda",
-            volume: autoscaling.BlockDeviceVolume.ebs(100),
+            volume: ec2.BlockDeviceVolume.ebs(50, {
+              volumeType: ec2.EbsDeviceVolumeType.GP2,
+            }),
           },
-        ]
-      }),
+        ],
     });
   }
 }
