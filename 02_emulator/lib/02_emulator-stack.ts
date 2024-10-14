@@ -73,10 +73,8 @@ export class EmulatorStack extends cdk.Stack {
         securityGroup: securityGroupEc2,
         blockDevices: [
           {
-            deviceName: "/dev/xvda",
-            volume: ec2.BlockDeviceVolume.ebs(50, {
-              volumeType: ec2.EbsDeviceVolumeType.GP2,
-            }),
+            deviceName: "/dev/sda1",
+            volume: ec2.BlockDeviceVolume.ebs(40),
           },
         ],
     });
