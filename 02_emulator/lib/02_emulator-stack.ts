@@ -13,6 +13,7 @@ interface EmulatorStackProps extends cdk.StackProps {
   instanceAmiId: string
   domainName: string
   hostedZoneId: string
+  hostedZoneName: string
   acmArn: string
 }
 
@@ -198,15 +199,15 @@ export class EmulatorStack extends cdk.Stack {
     });
 
     // Route53 A-Record
-    // new route53.ARecord(this, 'AlbAliasRecord', {
-    //   recordName: props?.domainName as string,
-    //   zone: new route53.PrivateHostedZone()
-    //   // zone: new route53.HostedZone(this, 'EmulatorHostedZone', {
-    //   //   zoneName: 'bam-b-00.com'
-    //   // }),
-    //   target: route53.RecordTarget.fromAlias(
-    //     new route53Tg.LoadBalancerTarget(alb)
-    //   ),
-    // })
+    new route53.ARecord(this, 'AlbAliasRecord', {
+      recordName: props?.domainName as string,
+      zone: route53.HostedZone.fromHostedZoneAttributes(this, 'DevHostedZone', {
+        hostedZoneId :props?.hostedZoneId as string,
+        zoneName: props?.hostedZoneName as string,
+      }),
+      target: route53.RecordTarget.fromAlias(
+        new route53Tg.LoadBalancerTarget(alb)
+      ),
+    })
   }
 }
