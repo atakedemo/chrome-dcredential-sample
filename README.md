@@ -104,7 +104,7 @@ Firebaseで自身の環境設定の上、対象ドメインを設定する
 [js/develop/envoy.yaml](https://github.com/atakedemo/android-emulator-container-scripts/blob/master/js/develop/envoy.yaml)
 [js/docker/envoy.yaml](https://github.com/google/android-emulator-container-scripts/blob/master/js/docker/envoy.yaml)
 
-* 59行目： "Issuer" を https://securetoken.google.com/{FirebaseのプロジェクトID}へ変更
+* 59行目： "Issuer" を 'https://securetoken.google.com/{FirebaseのプロジェクトID}'へ変更
 * 61行目： "audienes" を プロジェクトIDへ変更
 
 ```yaml
@@ -147,9 +147,7 @@ emu-docker list
 ```bash
 # バージョンを指定する場合
 curl -O 'https://dl.google.com/android/repository/emulator-linux_x64-12414864.zip'
-# curl -O 'https://dl.google.com/android/repository/sys-img/google_apis/x86_64-32_r08.zip'
 curl -O 'https://dl.google.com/android/repository/sys-img/google_apis_playstore/x86_64-32_r04-linux.zip'
-# emu-docker create emulator-linux_x64-12414864.zip x86_64-32_r08.zip
 emu-docker create emulator-linux_x64-12414864.zip x86_64-32_r04-linux.zip
 
 # とりあえず安定版を入れる場合
@@ -199,4 +197,3 @@ adb install -t appholder-wallet-debug.apk
 * [docker-compose fails with error "urllib3.exceptions.URLSchemeUnknown: Not supported URL scheme http+docker" - Stack Overflow](https://stackoverflow.com/questions/78518146/docker-compose-fails-with-error-urllib3-exceptions-urlschemeunknown-not-suppor)
 * [gRPCサーバーをAWS上で動かす｜作ってわかる！ はじめてのgRPC](https://zenn.dev/hsaki/books/golang-grpc-starting/viewer/awshost)
 * [aws-cdk-lib.aws_elasticloadbalancingv2 module · AWS CDK](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_elasticloadbalancingv2-readme.html)
-* 
